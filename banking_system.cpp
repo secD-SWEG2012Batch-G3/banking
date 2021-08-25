@@ -50,7 +50,7 @@ void check_balance();
 void customer_list(client_info []);
 void transfer_money(client_info []);
 void close_account();
-bool account_checker(int accno,int user_check);
+bool account_checker(int accno,int &user_check);
 void account_type_choice();
 void print_user_info(client_info []);
 void exit();
@@ -59,7 +59,7 @@ int main()
 {
     int choice;
     welcome();
-    
+
     choice = task_choice();
     switch (choice)
     {
@@ -112,7 +112,8 @@ void create_account()
     cout << "what is your postal code: "; cin >> user[counter].location.po_box;
     cout << "what is your passport number or official id number: "; cin >> user[counter].official_id;
     cout << "what is your country of residence: ";cin >> user[counter].country_reside;
-    user[counter].country_reside = toupper(user[counter].country_reside);
+//    user[counter].country_reside = toupper((user[counter].country_reside));
+
     if(user[counter].country_reside == account_type_country[1]){
         user[counter].account_type_country = account_type_country[1];
     }
@@ -132,11 +133,12 @@ void create_account()
 //a function to check the existence of the account in the database(array)
 bool account_checker(int accnumber,int &ran)
 {
-    
+
     for(int i=0;i<counter;i++)
-        if(accnumber == user[i].acc_num)
+        if(accnumber == user[i].acc_num){
             ran = i;
             return true;
+        }
         else
             return false;
 
@@ -145,7 +147,7 @@ bool account_checker(int accnumber,int &ran)
 void deposit()
 {
     system("cls");
-    int accNo,depo,ran=0;
+    int accNo,ran=0;
     float depo;
     bool check;
     no:
@@ -167,7 +169,7 @@ void withdrawl()
 {
     system("cls");
     int accNo,ran=0;
-    float wdraw
+    float wdraw;
     bool check;
     no:
     cout << "please enter account number : "; cin >> accNo;
@@ -175,9 +177,9 @@ void withdrawl()
     if(check == true){
         cout << "please the amount you would like to withdraw: ";
         cin >> wdraw;
-        user[ran].balance -= ;
+        user[ran].balance -= wdraw;
         cout << "operation successful";
-    } 
+    }
     else
         cout << "the account number you entered doesnot match any account holder in the datatbase:"
              <<  "please enter the account number correctly!"; goto no;
@@ -193,7 +195,7 @@ void check_balance()
     if(check == true){
         cout << "your account balance is: "<< user[ran].balance << "birr\n";
         cout << "operation successful";
-    } 
+    }
     else
         cout << "the account number you entered doesnot match any account holder in the datatbase:"
              <<  "please enter the account number correctly!"; goto no;
