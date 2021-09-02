@@ -116,7 +116,7 @@ void create_account()
     user[counter]->user_name.full_name = user[counter]->user_name.fname + " " +
                                          user[counter]->user_name.mname + " " +
                                          user[counter]->user_name.lname;
-    /*
+    
     cout << "what is your age: ";cin >> user[account_user_index]->age;
     cout << "what is your gender: ";cin >> user[account_user_index]->sex;
     cout << "what is your date of birth: [day] ";cin >> user[account_user_index]->d_bate.day;
@@ -133,7 +133,7 @@ void create_account()
         user[counter].account_type_country = account_type_country[1];
     }
     else
-        {user[counter].account_type_country = account_type_country[2];}*/
+        {user[counter].account_type_country = account_type_country[2];}
     cout << "what is your preferred account type based on interest: ([y]with interest,[n]interest free) ";
     char answer;
     cin >> answer;
