@@ -18,7 +18,7 @@ struct BOD
 };
 struct info
 {
-    string name;
+    char name[20];
     int accountNum;
     int amount;
     Address addr;
@@ -37,7 +37,7 @@ void deposit();
 void withdraw();
 void tranfer();
 void modify();
-void showInfo(info client);
+void showInfo();
 void deleteAcc();
 
 int counter = 0;
@@ -80,6 +80,7 @@ int main()
             modify();
             break;
         case 6:
+            showInfo();
             break;
         case 7:
             deleteAcc();
@@ -99,7 +100,8 @@ void create_acc()
 {
     client[counter] = new info;
     cout << "Enter your full name: ";
-    cin >> client[counter]->name;
+    cin.ignore();
+    cin.getline(client[counter]->name,20);
     cout << "\nEnter your address: ";
     cout << "\nCity: ";
     cin >> client[counter]->addr.city;
@@ -206,21 +208,30 @@ void tranfer()
 void modify()
 {
 }
-void showInfo(info client)
+void showInfo()
 {
-    cout << "\nName: " << client.name;
-    cout << "  Address ";
-    cout << "\nCity: " << client.addr.city;
-    cout << "\nWoreda: " << client.addr.woreda;
-    cout << "\nHouse number: " << client.addr.house_num;
+    int accountNum;
+    cout << "Enter our account number: ";
+    cin >> accountNum;
+     for(int i=0;i<counter;i++){
+        if(accountNum=client[i]->accountNum)
+        {
+    cout << "\nName: " << client[i]->name;
+    cout << " \n Address ";
+    cout << "\nCity: " << client[i]->addr.city;
+    cout << "\nWoreda: " << client[i]->addr.woreda;
+    cout << "\nHouse number: " << client[i]->addr.house_num;
     cout << "\nYour date of birth: ";
-    cout << "\nDay: " << client.birth.date;
-    cout << "\nMonth: " << client.birth.month;
-    cout << "\nYear: " << client.birth.year;
-    cout << "\nGovernment ID or passport number or driving licence: " << client.id, 20;
-    cout << "\nAccount number: " << client.accountNum;
-    cout << "\nCurrent amount of money : " << client.amount;
+    cout << "\nDay: " << client[i]->birth.date;
+    cout << "\nMonth: " << client[i]->birth.month;
+    cout << "\nYear: " << client[i]->birth.year;
+    cout << "\nGovernment ID or passport number or driving licence: " << client[i]->id, 20;
+    cout << "\nAccount number: " << client[i]->accountNum;
+    cout << "\nCurrent amount of money : " << client[i]->amount;
+        }
+     }
 }
+
 void deleteAcc()
 {
 }
