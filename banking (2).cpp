@@ -32,7 +32,7 @@ struct info
 
 void create_acc();
 bool accNum_checker(int,int);
-bool accMoney_checker(int);
+bool accMoney_checker(int, int);
 void deposit();
 void withdraw();
 void tranfer();
@@ -163,11 +163,11 @@ void deposit()
         else
             cout << "There is no account with this account number.";
     }
-bool accMoney_checker(int money)
+bool accMoney_checker(int money, int index)
 {
     bool exist;
     for(int i=0;i<counter;i++){
-       if((client[counter]->amount-money)>0)
+       if((client[index]->amount-money)>0)
            exist=true;
         else
             exist=false;
@@ -189,7 +189,7 @@ void withdraw()
 
             cout << "Enter the amount of money you want to withdraw: ";
             cin >> money;
-            checkMoney=accMoney_checker(money);
+            checkMoney=accMoney_checker(money,index);
             if(checkMoney==true){
             client[index]->amount -= money;
             cout << "You have withdraw " << money << "birr\n";
@@ -204,6 +204,47 @@ void withdraw()
 
 void tranfer()
 {
+    int senderIndex=0;
+    int recieverIndex=0;
+    bool checkSender;
+    bool checkReciever;
+    bool checkMoney;
+    int money;
+    int senderAccountNum;
+    int recieverAccountNum;
+    cout << "Enter our account number: ";
+    cin >> senderAccountNum;
+    checkSender=accNum_checker(senderAccountNum,&senderIndex);
+
+    if(checkSender==true){
+            cout << "Enter the account number you want to transfer money to: ";
+            cin >> recieverAccountNum;
+            checkReciever=accNum_checker(recieverAccountNum,&recieverIndex);
+
+            if(checkReciever==true){
+                cout << "Enter the amount of money you want to transfer: ";
+                cin >> money;
+
+            checkMoney=accMoney_checker(money,senderIndex);
+            if(checkMoney==true){
+            client[senderIndex]->amount -= money;
+            client[recieverIndex]->amount += money;
+            cout << "You have successfully transfer " << money << "birr to the account number "<<recieverAccountNum;
+            cout << "\nYour current account balance is " << client[senderIndex]->amount << endl;
+
+            }
+            else
+                cout<<"Sorry you can not transfer with your current balance.";
+
+
+            }
+    else
+        cout << "There is no account with this account number.";
+
+    }
+    else
+        cout << "There is no account with this account number.";
+
 }
 void modify()
 {
