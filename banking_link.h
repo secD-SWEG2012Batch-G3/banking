@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cctype>
+#include  <ctime>
 #include <iomanip>
 #include <string.h>
 #include <string>
@@ -23,6 +24,7 @@ struct transaction
 {
     string operation;
     float value;
+    char *time;
     int id;
 };
 struct address
@@ -39,6 +41,7 @@ struct client_info
     int age, acc_num;
     char sex;
     float balance, debt;
+    bool loan;
     float acc_interest;
     client_name user_name;
     date d_bate;
@@ -53,7 +56,8 @@ struct bank
 
 //global variable and constatnts for the program
 client_info *user[10];
-int counter = 0;          // number of user counter as a whole
+int total_user = 0;       // counter total user both who an account and who close an account
+int counter = 0;          // number of user counter as a for who have an active account
 int tran_counter = 0;     //transaction counter
 int interest_counter = 0; //a counter for the transaction of interest type account holders
 int with_out_counter = 0; //a counter for thentransaction of without interest account holders
@@ -63,6 +67,14 @@ string acctype[2] = {"with interest", "without interest"};
 string acc_choice[2] = {"checking", "saving"};
 string process[4] = {"Deposited", "Withdrawl", "Received", "Transferred"};
 float int_rate[2] = {0.25, 0.15}; //interest rate for saving account and checking account respectively
+/*
+    admin id        admin passsword
+    1120            1000
+    1121            1010
+    1122            1122
+    1123            1123
+
+*/
 int admin_id[10] = {1120, 1121, 1122, 1123};
 int admin_pass[10] = {1000, 1010, 1122, 1123};
 
@@ -116,7 +128,7 @@ void create_account()
     user[counter]->user_name.full_name = user[counter]->user_name.fname + " " +
                                          user[counter]->user_name.mname + " " +
                                          user[counter]->user_name.lname;
-    
+    /*
     cout << "what is your age: ";cin >> user[account_user_index]->age;
     cout << "what is your gender: ";cin >> user[account_user_index]->sex;
     cout << "what is your date of birth: [day] ";cin >> user[account_user_index]->d_bate.day;
@@ -125,15 +137,15 @@ void create_account()
     cout << "what is your address 1: "; cin >> user[account_user_index]->location.address_1;
     cout << "what is your address 2: "; cin >> user[account_user_index]->location.address_2;
     cout << "what is your postal code: "; cin >> user[account_user_index]->location.po_box;
-    cout << "what is your passport number or official id number: "; cin >> user[counter].official_id;
-    cout << "what is your country of residence: ";cin >> user[counter].country_reside;
-    user[counter].country_reside = toupper((user[counter].country_reside));
+    cout << "what is your passport number or official id number: "; cin >> user[counter].official_id;*/
+    cout << "what is your country of residence: ";cin >> user[counter]->country_reside;
+    //user[counter]->country_reside = toupper((user[counter]->country_reside));
 
-    if(user[counter].country_reside == account_type_country[1]){
-        user[counter].account_type_country = account_type_country[1];
+    if(user[counter]->country_reside == account_type_country[1]){
+        user[counter]->account_type_country = account_type_country[1];
     }
     else
-        {user[counter].account_type_country = account_type_country[2];}
+        {user[counter]->account_type_country = account_type_country[2];}
     cout << "what is your preferred account type based on interest: ([y]with interest,[n]interest free) ";
     char answer;
     cin >> answer;
@@ -151,12 +163,12 @@ void create_account()
     if (ans == 'C' || ans == 'c')
     {
         user[counter]->acc_interest = int_rate[1];
-        user[counter]->account_choice = acc_choice[1];
+        user[counter]->account_choice = acc_choice[0];
     }
     else
     {
         user[counter]->acc_interest = int_rate[0];
-        user[counter]->account_choice = acc_choice[0];
+        user[counter]->account_choice = acc_choice[1];
     }
     //cout << "what is the branch: ";cin >> user[counter].branch_name;
     cout << "minimum deposit: ";
@@ -173,6 +185,7 @@ void create_account()
          << "your account number is:   " << user[counter]->acc_num << endl;
     cout << "#########################################################################\n";
     counter++;
+    total_user++;
 
     system("pause");
 }
@@ -199,14 +212,19 @@ void deposit()
     float depo;
     bool check;
 no:
-    cout << "please enter account number : ";
+    cout << "######################################################################################\n";
+    cout << "\t\t"
+         << "please enter account number : ";
     cin >> accNo;
     check = account_checker(accNo, &account_user_index);
     if (check == true)
     {
-        cout << "please the amount you would like to deposit: ";
+        cout << "\t\t"
+             << "please the amount you would like to deposit: ";
         cin >> depo;
         user[account_user_index]->balance += depo;
+        time_t curr_time;
+	    time(&curr_time);
         if (user[account_user_index]->account_type == acctype[0])
         {
             interest_counter++;
@@ -218,10 +236,13 @@ no:
         user[account_user_index]->client_user[user[account_user_index]->check.counter].id = 8000 + tran_counter;
         user[account_user_index]->client_user[user[account_user_index]->check.counter].operation = process[0];
         user[account_user_index]->client_user[user[account_user_index]->check.counter].value = depo;
+        user[account_user_index]->client_user[user[account_user_index]->check.counter].time = asctime(localtime(&curr_time));
         user[account_user_index]->check.counter++;
         tran_counter++;
 
-        cout << "operation successful\n";
+        cout << "\t\t\t"
+             << "operation successful\n";
+        cout << "############################################################################################\n";
     }
     else
     {
@@ -238,12 +259,15 @@ void withdrawl()
     float wdraw;
     bool check;
 no:
-    cout << "please enter account number : ";
+    cout << "######################################################################################\n";
+    cout << "\t\t"
+         << "please enter account number : ";
     cin >> accNo;
     check = account_checker(accNo, &account_user_index);
     if (check == true)
     {
-        cout << "please the amount you would like to withdraw: ";
+        cout << "\t\t"
+             << "please the amount you would like to withdraw: ";
         cin >> wdraw;
         while (wdraw > 100000)
         {
@@ -251,6 +275,8 @@ no:
             cin >> wdraw;
         }
         user[account_user_index]->balance -= wdraw;
+        time_t curr_time;
+	    curr_time = time(NULL);
         if (user[account_user_index]->account_type == acctype[0])
         {
             interest_counter++;
@@ -262,9 +288,13 @@ no:
         user[account_user_index]->client_user[user[account_user_index]->check.counter].id = 8000 + tran_counter;
         user[account_user_index]->client_user[user[account_user_index]->check.counter].operation = process[1];
         user[account_user_index]->client_user[user[account_user_index]->check.counter].value = wdraw;
+        user[account_user_index]->client_user[user[account_user_index]->check.counter].time = ctime(&curr_time);
         user[account_user_index]->check.counter++;
         tran_counter++;
-        cout << "operation successful" << endl;
+        cout << "\t\t\t"
+             << "operation successful\n";
+        cout << "############################################################################################\n";
+        system("pause");
     }
     else
     {
@@ -280,7 +310,9 @@ void check_balance()
     int accNo, account_user_index = 0;
     bool check;
 no:
-    cout << "please enter account number : ";
+    cout << "*****************************************************************************************\n";
+    cout << "\t\t"
+         << "please enter account number : ";
     cin >> accNo;
     check = account_checker(accNo, &account_user_index);
     if (check)
@@ -305,13 +337,16 @@ no:
 //a function to list out every customers list with their balance
 void customer_list(client_info *user[])
 {
-    cout << "account holder name\taccount number\tbalance" << endl;
+    cout << "*************************************************************************\n";
+    cout << "\t\taccount holder name\taccount number\tbalance" << endl;
     for (int i = 0; i < counter; i++)
     {
         cout << setw(25) << user[i]->user_name.full_name << setw(25)
              << user[i]->acc_num << setw(13)
              << user[i]->balance << endl;
     }
+    cout << "*************************************************************************\n";
+    system("pause");
 }
 //a function to transfer money from one user to another
 void transfer_money(client_info *user[])
@@ -321,20 +356,36 @@ void transfer_money(client_info *user[])
     int account_sender_index = 0, account_receiver_index = 0;
     float amount;
     bool from_checker, to_checker;
+    cout << "######################################################################################\n";
 
-    cout << "account number of the receiver: ";
+    cout << "\t\t" << "account number of the receiver: ";
+to:
     cin >> accountTo;
     to_checker = account_checker(accountTo, &account_receiver_index);
-    cout << "account number of the sender: ";
+    if (to_checker == false)
+    {
+        cout << "\twrong account number!!please try again!\t";
+        goto to;
+    }
+    cout << "\t\t" << "account number of the sender: ";
+from:
     cin >> accountFrom;
     from_checker = account_checker(accountFrom, &account_sender_index);
+    if (from_checker == false)
+    {
+        cout << "\twrong account number!!please try again!\t";
+        goto from;
+    }
 trans:
-    cout << "please enter the amount you would like to transfer: ";
+    cout << "\t\t"
+         << "please enter the amount you would like to transfer: ";
     cin >> amount;
     if (from_checker == true && to_checker == true && user[account_sender_index]->balance > amount)
     {
         user[account_sender_index]->balance -= amount;
         user[account_receiver_index]->balance += amount;
+        time_t curr_time;
+	    curr_time = time(NULL);
         if (user[account_sender_index]->account_type == acctype[0])
         {
             interest_counter++;
@@ -343,16 +394,23 @@ trans:
         {
             with_out_counter++;
         }
+        //transaction id assignment for both sender and receiver
         user[account_sender_index]->client_user[user[account_sender_index]->check.counter].id = 8000 + tran_counter;
         user[account_receiver_index]->client_user[user[account_receiver_index]->check.counter].id = 8000 + tran_counter;
-        user[account_receiver_index]->client_user[user[account_receiver_index]->check.counter].operation = process[3];
+        //transaction history elements for both users like the operation and the value of transferred money
+        user[account_receiver_index]->client_user[user[account_receiver_index]->check.counter].operation = process[2];
         user[account_receiver_index]->client_user[user[account_receiver_index]->check.counter].value = amount;
-        user[account_sender_index]->client_user[user[account_sender_index]->check.counter].operation = process[4];
+        user[account_receiver_index]->client_user[user[account_receiver_index]->check.counter].time = ctime(&curr_time);
+        user[account_sender_index]->client_user[user[account_sender_index]->check.counter].operation = process[3];
         user[account_sender_index]->client_user[user[account_sender_index]->check.counter].value = amount;
+        user[account_sender_index]->client_user[user[account_sender_index]->check.counter].time = ctime(&curr_time);
         user[account_sender_index]->check.counter++;
         user[account_receiver_index]->check.counter++;
-        tran_counter++;
-        cout << "operation successful" << endl;
+        tran_counter++; // tranaction counter for all users
+        cout << "\t\t\t"
+             << "operation successful\n";
+        cout << "############################################################################################\n";
+        system("pause");
     }
     else
     {
@@ -371,16 +429,18 @@ no:
     cout << "please enter account number : ";
     cin >> accNo;
     check = account_checker(accNo, &account_user_index);
-    if (check == true)
+    if (check)
     {
         cout << "total balance of your account: " << user[account_user_index]->balance << endl;
-        user[account_user_index]->balance = 0;
-        for (int i = account_user_index; i < counter; ++i)
+        //user[account_user_index]->balance = 0;
+        for (int i = account_user_index; i < total_user; ++i)
         {
             user[i] = user[i + 1];
         }
-        counter--;
+        //delete user[total_user];
+        total_user--;
         cout << "operation successful\n";
+        system("pause");
     }
     else
     {
@@ -447,20 +507,21 @@ no:
     {
         cout << "************************************************************************************************\n";
         cout << "\t\t"
-             << "Name of the account holder: " << user[account_user_index]->user_name.full_name;
+             << "\nName of the account holder: " << user[account_user_index]->user_name.full_name;
         cout << "\t\t"
-             << "Account number of the holder: " << user[account_user_index]->acc_num;
+             << "\nAccount number of the holder: " << user[account_user_index]->acc_num;
         cout << "\t\t"
-             << "balance of the account holder: " << user[account_user_index]->balance;
+             << "\nbalance of the account holder: " << user[account_user_index]->balance << endl;
         cout << "*************************************************************************************************\n";
         cout << "************************************BANK RECORD**************************************************\n";
         cout << "*************************************************************************************************\n";
-        cout << "\t Transaction ID \t Amount \t operation";
+        cout << "\t Transaction ID \t Amount \t operation \t time\n";
         for (int i = 0; i < user[account_user_index]->check.counter; ++i)
         {
             cout << "\t " << user[account_user_index]->client_user[i].id
-                 << " \t " << user[account_user_index]->client_user[i].value
-                 << " \t " << user[account_user_index]->client_user[i].operation;
+                 << " \t\t\t" << user[account_user_index]->client_user[i].value
+                 << " \t\t" << user[account_user_index]->client_user[i].operation
+                 << "\t" << user[account_user_index]->client_user[i].time<< endl;
         }
         system("pause");
     }
@@ -482,37 +543,48 @@ no:
     cout << "please enter account number : ";
     cin >> accNo;
     check = account_checker(accNo, &account_user_index);
-    if (check == true)
+    //checks the validity of the account number
+    if (check)
     {
-        if (user[account_user_index]->balance > 1000000000)
+        //check whether the person has taken a loan before or not
+        if (user[account_user_index]->loan == false)
         {
-            choice = 6;
-        }
-        else if (user[account_user_index]->balance > 10000000)
-        {
-            choice = 5;
-        }
-        else if (user[account_user_index]->balance > 1000000)
-        {
-            choice = 4;
-        }
-        else if (user[account_user_index]->balance > 100000)
-        {
-            choice = 3;
-        }
-        else if (user[account_user_index]->balance > 10000)
-        {
-            choice = 2;
-        }
-        else if (user[account_user_index]->balance > 1000)
-        {
-            choice = 1;
+            if (user[account_user_index]->balance > 1000000000)
+            {
+                choice = 6;
+            }
+            else if (user[account_user_index]->balance > 10000000)
+            {
+                choice = 5;
+            }
+            else if (user[account_user_index]->balance > 1000000)
+            {
+                choice = 4;
+            }
+            else if (user[account_user_index]->balance > 100000)
+            {
+                choice = 3;
+            }
+            else if (user[account_user_index]->balance > 10000)
+            {
+                choice = 2;
+            }
+            else if (user[account_user_index]->balance > 1000)
+            {
+                choice = 1;
+            }
+            else
+            {
+                cout << "your are not eligible for loan!! come back another time!\n";
+                system("pause");
+            }
         }
         else
         {
-            cout << "your are not eligible for loan!! come back another time!";
+            cout << "you have previously taken a loan! you cannot take a loan any more!\n";
             system("pause");
         }
+        //depending on the balance it will give the user the appropriate choice
         switch (choice)
         {
         case 1:
@@ -522,6 +594,7 @@ no:
             cin >> loan;
             user[account_user_index]->balance += loan;
             user[account_user_index]->debt += loan;
+            user[account_user_index]->loan = true;
             cout << "operation successful\n";
             break;
         }
@@ -532,6 +605,7 @@ no:
             cin >> loan;
             user[account_user_index]->balance += loan;
             user[account_user_index]->debt += loan;
+            user[account_user_index]->loan = true;
             cout << "operation successful\n";
             break;
         }
@@ -542,6 +616,7 @@ no:
             cin >> loan;
             user[account_user_index]->balance += loan;
             user[account_user_index]->debt += loan;
+            user[account_user_index]->loan = true;
             cout << "operation successful\n";
             break;
         }
@@ -552,6 +627,7 @@ no:
             cin >> loan;
             user[account_user_index]->balance += loan;
             user[account_user_index]->debt += loan;
+            user[account_user_index]->loan = true;
             cout << "operation successful\n";
             break;
         }
@@ -562,6 +638,7 @@ no:
             cin >> loan;
             user[account_user_index]->balance += loan;
             user[account_user_index]->debt += loan;
+            user[account_user_index]->loan = true;
             cout << "operation successful\n";
             break;
         }
@@ -572,6 +649,7 @@ no:
             cin >> loan;
             user[account_user_index]->balance += loan;
             user[account_user_index]->debt += loan;
+            user[account_user_index]->loan = true;
             cout << "operation successful\n";
             break;
         }
@@ -583,6 +661,7 @@ no:
     {
         cout << "the account number you entered doesnot match any account holder in the datatbase:"
              << "please enter the account number correctly!\n";
+        system("pause");
         goto no;
     }
 }
@@ -593,7 +672,7 @@ void multi_stati(client_info *user[])
     int ch_checker = 0, sav_checker = 0, int_checker = 0, wout_checker = 0, comp_checker = 0, comp2_checker = 0;
     int comS_checker = 0, comC_checker = 0, intS_checker = 0, intC_checker = 0;
     cout << "==========================================================================================\n";
-    cout << "\n\tnumber of clients: " << counter;
+    cout << "\n\tnumber of clients: " << total_user;
     cout << "\n\ttotal capital: ";
     for (int i = 0; i < counter; ++i)
     {
@@ -612,7 +691,7 @@ void multi_stati(client_info *user[])
     cout << "\n\tnumber of clients above 100,000 balance: ";
     for (int i = 0; i < counter; ++i)
     {
-        if (user[i]->balance < 100000)
+        if (user[i]->balance > 100000)
         {
             above_checker++;
         }
@@ -623,7 +702,7 @@ void multi_stati(client_info *user[])
     {
         if (user[i]->account_choice == acc_choice[0])
         {
-            ch_checker;
+            ch_checker++;
         }
     }
     cout << ch_checker;
@@ -674,6 +753,7 @@ void multi_stati(client_info *user[])
     cout << intS_checker;
     cout << "\n\tnumber of tranaction by clients with interest account: " << interest_counter;
     cout << "\n\tnumber of tranaction by clients with out interest account: " << with_out_counter;
+    cout << "\n\tnumber of tranaction by clients as a whole: " << tran_counter;
 
     cout << "\n==========================================================================================\n";
     system("pause");
@@ -683,6 +763,7 @@ void admin()
 {
     int id, pass;
     bool check_id, check_pass;
+
     cout << setw(10) << "**************************************************\n";
 again:
     cout << setw(25) << "enter your admin id ";
@@ -706,25 +787,33 @@ again:
 
     if (check_id == true && check_pass == true)
     {
-        int choose;
-        cout << "[1] for total customer list information\n"
-             << "[2] for general statstical report\n";
-        cin >> choose;
-        switch (choose)
+        bool isDone = true;
+        while (isDone)
         {
-        case 1:
-            customer_list(user);
-            break;
-        case 2:
-            multi_stati(user);
-            break;
-        default:
-            break;
+            int choose;
+            cout << "[1] for total customer list information\n"
+                 << "[2] for general statstical report\n"
+                 << "[3] to sign out!";
+            cin >> choose;
+            switch (choose)
+            {
+            case 1:
+                customer_list(user);
+                break;
+            case 2:
+                multi_stati(user);
+                break;
+            case 3:
+                isDone = false;
+                break;
+            default:
+                break;
+            }
         }
     }
     else
     {
-        cout << "wrong password or Admin id please enter you credential again!!";
+        cout << "wrong password or Admin id please enter you credential again!!\n";
         goto again;
     }
 }
