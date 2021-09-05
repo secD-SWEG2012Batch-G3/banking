@@ -128,7 +128,7 @@ void create_account()
     user[counter]->user_name.full_name = user[counter]->user_name.fname + " " +
                                          user[counter]->user_name.mname + " " +
                                          user[counter]->user_name.lname;
-    /*
+    
     cout << "what is your age: ";cin >> user[account_user_index]->age;
     cout << "what is your gender: ";cin >> user[account_user_index]->sex;
     cout << "what is your date of birth: [day] ";cin >> user[account_user_index]->d_bate.day;
@@ -137,7 +137,7 @@ void create_account()
     cout << "what is your address 1: "; cin >> user[account_user_index]->location.address_1;
     cout << "what is your address 2: "; cin >> user[account_user_index]->location.address_2;
     cout << "what is your postal code: "; cin >> user[account_user_index]->location.po_box;
-    cout << "what is your passport number or official id number: "; cin >> user[counter].official_id;*/
+    cout << "what is your passport number or official id number: "; cin >> user[counter].official_id;
     cout << "what is your country of residence: ";cin >> user[counter]->country_reside;
     //user[counter]->country_reside = toupper((user[counter]->country_reside));
 
