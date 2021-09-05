@@ -1,0 +1,213 @@
+//banking management system
+#include <iostream>
+#include <cctype>
+#include <iomanip>
+#include <string.h>
+#include <string>
+#include <cmath>
+#include <cstdlib>
+
+using namespace std;
+
+struct client_name
+{
+    string fname, mname, lname, full_name;
+};
+struct date
+{
+    int day, month, year;
+};
+
+
+struct address
+{
+    string address_1;
+    string address_2;
+    int po_box;
+};
+struct client_info
+{
+    string account_type, official_id, account_choice;
+    string account_type_country, country_reside;
+    string branch_name;
+    int age, acc_num;
+    char sex;
+    float balance, debt;
+    float acc_interest;
+    client_name user_name;
+    date d_bate;
+    address location;
+    
+};
+
+client_info *user[10];
+int counter = 0;          
+int task_choice();
+void create_account();
+void deposit();
+void withdrawl();
+void check_balance();
+void exit();
+
+int main()
+{
+    int choice;
+    bool isDone = true;
+    while (isDone)
+    {
+        system("cls");
+        choice = task_choice();
+        switch (choice)
+        {
+        case 1:
+            create_account();
+            break;
+        case 2:
+            deposit();
+            break;
+        case 3:
+            withdrawl();
+            break;
+        case 4:
+            check_balance();
+            break;
+       
+        case 5:
+            isDone = false;
+            break;
+        }
+    }
+    return 0;
+}
+
+
+
+int task_choice()
+{
+    int task;
+    cout << setw(60) << "choose the service you would like to perform: \n";
+    cout << "\t\t\t"
+         << " [1] to create account \n"
+         << "\t\t\t"
+         << " [2] To deposit \n"
+         << "\t\t\t"
+         << " [3] To withdraw \n"
+         << "\t\t\t"
+         << " [4] To check balance \n"
+         << "\t\t\t"
+        << " [5] To exit \n";
+    cin >> task;
+    return task;
+}
+//a function to create a new user account information
+void create_account()
+{
+    user[counter] = new client_info;
+    cout << "what is your first name: ";
+    cin >> user[counter]->user_name.fname;
+    cout << "what is your middle name: ";
+    cin >> user[counter]->user_name.mname;
+    cout << "what is your last name: ";
+    cin >> user[counter]->user_name.lname;
+    user[counter]->user_name.full_name = user[counter]->user_name.fname + " " +
+                                         user[counter]->user_name.mname + " " +
+                                         user[counter]->user_name.lname;
+    
+    cout << "what is your preferred account type based on interest: ([y]with interest,[n]interest free) ";
+    char answer;
+    cin >> answer;
+    
+}
+bool account_checker(int accnumber, int *ran)
+{
+    bool does_exist = false;
+    for (int i = 0; i < counter; i++)
+    {
+        if (accnumber == user[i]->acc_num)
+        {
+            *ran = i;
+            does_exist = true;
+        }
+    }
+    return does_exist;
+}
+void deposit()
+{
+    system("cls");
+    int accNo, account_user_index = 0;
+    float depo;
+    bool check;
+no:
+    cout << "please enter account number : ";
+    cin >> accNo;
+    check = account_checker(accNo, &account_user_index);
+    if (check == true)
+    {
+        cout << "please the amount you would like to deposit: ";
+        cin >> depo;
+        user[account_user_index]->balance += depo;
+     
+    }
+    else
+    {
+        cout << "the account number you entered doesnot match any account holder in the datatbase:"
+             << "please enter the account number correctly!\n";
+        goto no;
+    }
+}
+void withdrawl()
+{
+    system("cls");
+    int accNo, account_user_index = 0;
+    float wdraw;
+    bool check;
+no:
+    cout << "please enter account number : ";
+    cin >> accNo;
+    check = account_checker(accNo, &account_user_index);
+    if (check == true)
+    {
+        cout << "please the amount you would like to withdraw: ";
+        cin >> wdraw;
+        while (wdraw > 100000)
+        {
+            cout << "you cannot withdraw money above 100,000 birr";
+            cin >> wdraw;
+        }
+        user[account_user_index]->balance -= wdraw;
+        
+    }
+    else
+    {
+        cout << "the account number you entered doesnot match any account holder in the datatbase:"
+             << "please enter the account number correctly!";
+        goto no;
+    }
+}
+{
+    system("cls");
+    int accNo, account_user_index = 0;
+    bool check;
+no:
+    cout << "please enter account number : ";
+    cin >> accNo;
+    check = account_checker(accNo, &account_user_index);
+    if (check)
+    {
+        cout << "************************************************************************************\n";
+        cout << "\t\t\t"
+             << "your account balance is: " << user[account_user_index]->balance << " birr\n";
+        cout << "\t\t\t"
+             << "your debt is: " << user[account_user_index]->debt << " birr\n";
+        cout << "\t\t\t"
+             << "operation successful" << endl;
+        cout << "************************************************************************************\n";
+        system("pause");
+    }
+    else
+    {
+        cout << "the account number you entered doesn't match any account holder in the database:"
+             << "please enter the account number correctly!\n";
+        goto no;
+    }
+}
