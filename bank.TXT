@@ -1,0 +1,218 @@
+//banking management system
+#include <iostream>
+#include <cctype>
+#include <iomanip>
+#include <string.h>
+#include <string>
+#include <cmath>
+#include <cstdlib>
+
+using namespace std;
+
+struct client_name
+{
+    string fname, mname, lname, full_name;
+};
+struct date
+{
+    int day, month, year;
+};
+struct tracker
+{
+    int counter = 0;
+};
+struct transaction
+{
+    string operation;
+    float value;
+    int id;
+};
+struct address
+{
+    string address_1;
+    string address_2;
+    int po_box;
+};
+struct client_info
+{
+    string account_type, official_id, account_choice;
+    string account_type_country, country_reside;
+    string branch_name;
+    int age, acc_num;
+    char sex;
+    float balance, debt;
+    float acc_interest;
+    client_name user_name;
+    date d_bate;
+    address location;
+    transaction client_user[10];
+    tracker check;
+};
+struct bank
+{
+    float capital;
+};
+
+client_info *user[10];
+int counter = 0;          // number of user counter as a whole
+int tran_counter = 0;     //transaction counter
+int interest_counter = 0; //a counter for the transaction of interest type account holders
+int with_out_counter = 0; //a counter for thentransaction of without interest account holders
+int acc_num = 1000;       // inital account number for users
+string account_type_country[2] = {"ETHIOPIAN", "Foreigner"};
+string acctype[2] = {"with interest", "without interest"};
+string acc_choice[2] = {"checking", "saving"};
+string process[4] = {"Deposited", "Withdrawl", "Received", "Transferred"};
+float int_rate[2] = {0.25, 0.15}; //interest rate for saving account and checking account respectively
+int admin_id[10] = {1120, 1121, 1122, 1123};
+int admin_pass[10] = {1000, 1010, 1122, 1123};
+
+
+
+
+void admin();
+void multi_stat(client_info []);
+
+
+
+
+void multi_stati(client_info *user[])
+{
+    int sum, below_checker = 0, above_checker = 0;
+    int ch_checker = 0, sav_checker = 0, int_checker = 0, wout_checker = 0, comp_checker = 0, comp2_checker = 0;
+    int comS_checker = 0, comC_checker = 0, intS_checker = 0, intC_checker = 0;
+    cout << "==========================================================================================\n";
+    cout << "\n\tnumber of clients: " << counter;
+    cout << "\n\ttotal capital: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        sum += user[i]->balance;
+    }
+    cout << sum;
+    cout << "\n\tnumber of clients below 100,000 balance: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->balance < 100000)
+        {
+            below_checker++;
+        }
+    }
+    cout << below_checker;
+    cout << "\n\tnumber of clients above 100,000 balance: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->balance < 100000)
+        {
+            above_checker++;
+        }
+    }
+    cout << above_checker;
+    cout << "\n\tnumber of clients with checking account: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->account_choice == acc_choice[0])
+        {
+            ch_checker;
+        }
+    }
+    cout << ch_checker;
+    cout << "\n\tnumber of clients with saving account: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->account_choice == acc_choice[1])
+        {
+            sav_checker++;
+        }
+    }
+    cout << sav_checker;
+    cout << "\n\tnumber of clients with saving account and with interest: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if ((user[i]->account_choice == acc_choice[1]) && (user[i]->account_type == acctype[0]))
+        {
+            comS_checker++;
+        }
+    }
+    cout << comS_checker;
+    cout << "\n\tnumber of clients with checking account and with interest: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->account_choice == acc_choice[0] && user[i]->account_type == acctype[0])
+        {
+            comC_checker++;
+        }
+    }
+    cout << comC_checker;
+    cout << "\n\tnumber of clients with checking account and without interest: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->account_choice == acc_choice[0] && user[i]->account_type == acctype[1])
+        {
+            intC_checker++;
+        }
+    }
+    cout << intC_checker;
+    cout << "\n\tnumber of clients with Saving account and without interest: ";
+    for (int i = 0; i < counter; ++i)
+    {
+        if (user[i]->account_choice == acc_choice[1] && user[i]->account_type == acctype[1])
+        {
+            intS_checker++;
+        }
+    }
+    cout << intS_checker;
+    cout << "\n\tnumber of tranaction by clients with interest account: " << interest_counter;
+    cout << "\n\tnumber of tranaction by clients with out interest account: " << with_out_counter;
+
+    cout << "\n==========================================================================================\n";
+    system("pause");
+}
+void admin()
+{
+    int id, pass;
+    bool check_id, check_pass;
+    cout << setw(10) << "**************************************************\n";
+again:
+    cout << setw(25) << "enter your admin id ";
+    cin >> id;
+    for (int i = 0; i < 10; i++)
+    {
+        if (id == admin_id[i])
+        {
+            check_id = true;
+        }
+    }
+    cout << setw(25) << "enter your password ";
+    cin >> pass;
+    for (int i = 0; i < 10; i++)
+    {
+        if (pass == admin_pass[i])
+        {
+            check_pass = true;
+        }
+    }
+
+    if (check_id == true && check_pass == true)
+    {
+        int choose;
+        cout << "[1] for total customer list information\n"
+             << "[2] for general statstical report\n";
+        cin >> choose;
+        switch (choose)
+        {
+        case 1:
+            customer_list(user);
+            break;
+        case 2:
+            multi_stati(user);
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        cout << "wrong password or Admin id please enter you credential again!!";
+        goto again;
+    }
+}
