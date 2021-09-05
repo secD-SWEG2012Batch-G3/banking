@@ -36,6 +36,7 @@ bool accMoney_checker(int, int);
 void deposit();
 void withdraw();
 void tranfer();
+void checkBalance();
 void modify();
 void showInfo();
 void deleteAcc();
@@ -46,20 +47,23 @@ info *client[10];
 int main()
 {
     system ("color 3E");
+    cout << "\n    WELCOME TO ONLINE BANKING SYSTEM!!!\n";
     int choice;
     bool isDone = true;
+
     while (isDone)
     {
         choice:
-        cout << "\n------------------Menu------------------------\n";
-        cout << "Enter 1 to create new account.\n";
-        cout << "Enter 2 to deposit money on your account.\n";
-        cout << "Enter 3 to withdraw money from your account.\n";
-        cout << "Enter 4 to transfer money.\n";
-        cout << "Enter 5 to modify your personal information.\n";
-        cout << "Enter 6 to see your information.\n";
-        cout << "Enter 7 to delete your account.\n";
-        cout << "Enter 0 to exit.\n";
+        cout << "\n  ****************Menu**************************\n";
+        cout << "    Enter 1 to create new account.\n";
+        cout << "    Enter 2 to deposit money on your account.\n";
+        cout << "    Enter 3 to withdraw money from your account.\n";
+        cout << "    Enter 4 to transfer money.\n";
+        cout << "    Enter 5 to check your balance.\n";
+        cout << "    Enter 6 to see your information.\n";
+        cout << "    Enter 7 to modify your personal information.\n";
+        cout << "    Enter 8 to delete your account.\n";
+        cout << "    Enter 0 to exit.\n";
         cin >> choice;
 
         switch (choice)
@@ -77,12 +81,15 @@ int main()
             tranfer();
             break;
         case 5:
-            modify();
+            checkBalance();
             break;
         case 6:
             showInfo();
             break;
         case 7:
+            modify();
+            break;
+        case 8:
             deleteAcc();
             break;
         case 0:
@@ -244,6 +251,20 @@ void tranfer()
     }
     else
         cout << "There is no account with this account number.";
+
+}
+void checkBalance()
+{
+    int index=0;
+    bool check;
+    int accountNum;
+    cout << "Enter our account number: ";
+    cin >> accountNum;
+    check=accNum_checker(accountNum,&index);
+
+    if(check==true){
+            cout << "Your current account balance is " << client[index]->amount << endl;
+        }
 
 }
 void modify()
